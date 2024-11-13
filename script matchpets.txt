@@ -1,0 +1,41 @@
+drop table likes;
+drop table commentPost;
+drop table post;
+drop table matchPet;
+drop table photo;
+drop table pet;
+drop table profileUser;
+
+create table profileUser ( userId Bigint primary Key auto_increment,name varchar(50) not null, email varchar(50) not null, phoneNumber int not null, password varchar(50) not null,country varchar(50) not null, city varchar(50) not null, createAt date not null, updateAt date not null );
+create table pet (petId Bigint primary key auto_increment,userId Bigint not null,name varchar(50) not null,typePet varchar(50) not null, breed varchar(50) not null, color varchar(50) not null,age int not null, description varchar(200), createAt date not null, updateAt date not null );
+create table photo (photId Bigint primary key auto_increment, petId Bigint not null, url varchar(2000),createAt date not null, updateAt date not null );
+create table matchPet(matchId Bigint primary key auto_increment,pet1 Bigint not null, pet2 Bigint not null,enableChat boolean not null, enableFriend boolean not null ,createAt date not null, updateAt date not null );
+create table post( postId  Bigint primary key auto_increment,userId Bigint not null, postText varchar(500),urlPhoto varchar(2000),urlVideo varchar(2000),createAt date not null, updateAt date not null );
+create table commentPost (commentId Bigint primary key auto_increment,userId Bigint not null,postId Bigint not null, commentText  varchar(200) not null,createAt date not null, updateAt date not null );
+create table likes (likeId Bigint primary key auto_increment,userId Bigint not null,postId Bigint not null, typeEmoji varchar(20),createAt date not null, updateAt date not null );
+
+ALTER TABLE pet 
+ADD CONSTRAINT fk_pet_userId FOREIGN KEY (userId) REFERENCES profileUser(userId);
+
+-- Tabla photo
+ALTER TABLE photo 
+ADD CONSTRAINT fk_photo_petId FOREIGN KEY (petId) REFERENCES pet(petId);
+
+-- Tabla matchPet
+ALTER TABLE matchPet 
+ADD CONSTRAINT fk_match_pet1 FOREIGN KEY (pet1) REFERENCES pet(petId),
+ADD CONSTRAINT fk_match_pet2 FOREIGN KEY (pet2) REFERENCES pet(petId);
+
+-- Tabla post
+ALTER TABLE post 
+ADD CONSTRAINT fk_post_userId FOREIGN KEY (userId) REFERENCES profileUser(userId);
+
+-- Tabla commentPost
+ALTER TABLE commentPost 
+ADD CONSTRAINT fk_commentPost_userId FOREIGN KEY (userId) REFERENCES profileUser(userId),
+ADD CONSTRAINT fk_commentPost_postId FOREIGN KEY (postId) REFERENCES post(postId);
+
+-- Tabla likes
+ALTER TABLE likes 
+ADD CONSTRAINT fk_likes_userId FOREIGN KEY (userId) REFERENCES profileUser(userId),
+ADD CONSTRAINT fk_likes_postId FOREIGN KEY (postId) REFERENCES post(postId);
